@@ -28,10 +28,16 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Notify AWS CodeDeploy
+      - name: Deploy via AWS CodeDeploy
         run: |
           aws deploy create-deployment \
             --application-name blog-app \
             --deployment-group-name ammar-dg \
-            --revision "{\"revisionType\": \"AppSpecContent\", \"appSpecContent\": {\"content\": \"file://appspec.yml\"}}" \
+            --revision "{
+              \"revisionType\": \"GitHub\",
+              \"gitHubLocation\": {
+                \"repository\": \"MAmmarRaza/codedeploy\",
+                \"commitId\": \"${{ github.sha }}\"
+              }
+            }" \
             --region us-east-1
